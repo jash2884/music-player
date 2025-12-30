@@ -95,3 +95,47 @@ Only the required endpoints were used to keep the implementation **simple and fo
 npm install
 npx expo start
 ```
+
+## 🧠 Architecture
+
+The application follows a clean and predictable architecture focused on **single-source state management** and **clear separation of concerns**.
+
+### State Management
+
+- A **single global audio instance** is managed using **Zustand**
+- All playback-related state (current song, play/pause, seek position, queue, shuffle, repeat) lives in one store
+- Both the **Mini Player** and **Full Player** consume the same global state, ensuring perfect synchronization across navigation
+
+### Layered Structure
+
+- **API Layer**
+  - Handles all communication with the JioSaavn public API
+  - Responsible only for data fetching and response parsing
+- **State Layer**
+  - Manages audio lifecycle, queue logic, and playback modes
+  - Encapsulates all side effects related to audio playback
+- **UI Layer**
+  - Purely presentational components
+  - Reads state and triggers actions without containing business logic
+
+### Navigation
+
+- Implemented using **React Navigation v6**
+- Stack navigation is used for Player and Queue screens
+- Bottom tabs are used for primary sections like Home and Artists
+
+This architecture keeps the application **scalable, maintainable, and easy to reason about**, while avoiding unnecessary complexity.
+
+---
+
+## ⚖️ Trade-offs
+
+Several intentional trade-offs were made to balance **simplicity, stability, and scope**:
+
+- **AsyncStorage** was used instead of MMKV to ensure compatibility and simplicity within an Expo-managed workflow
+- Search-based API endpoints were used instead of detailed song endpoints to reduce API complexity and latency
+- Background playback is demonstrated in **standalone builds**, as Expo Go has known iOS limitations
+- UI implementation focuses on consistency and usability rather than pixel-perfect reproduction of the Figma design
+- Offline downloads were not implemented due to time constraints and scope prioritization
+
+These trade-offs were chosen to deliver a **robust and clear implementation of core requirements** without over-engineering the solution.
