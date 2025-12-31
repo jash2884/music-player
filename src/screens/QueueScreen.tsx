@@ -13,6 +13,8 @@ import { typography } from "../constants/typography";
 export default function QueueScreen() {
   const queue = usePlayerStore((s) => s.queue);
   const playSong = usePlayerStore((s) => s.playSong);
+  const removeFromQueue = usePlayerStore((s) => s.removeFromQueue);
+  const moveQueueItem = usePlayerStore((s) => s.moveQueueItem);
 
   return (
     <View style={styles.container}>
@@ -24,18 +26,31 @@ export default function QueueScreen() {
         <FlatList
           data={queue}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.card}
-              onPress={() => playSong(item)}
-            >
-              <Text style={styles.title} numberOfLines={1}>
-                {item.title}
-              </Text>
-              <Text style={styles.artist} numberOfLines={1}>
-                {item.artist}
-              </Text>
-            </TouchableOpacity>
+          renderItem={({ item, index }) => (
+            <View style={styles.card}>
+              <TouchableOpacity onPress={() => playSong(item)}>
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.artist}>{item.artist}</Text>
+              </TouchableOpacity>
+
+              <View style={styles.actions}>
+                <TouchableOpacity
+                  onPress={() => moveQueueItem(index, index - 1)}
+                >
+                  <Text style={styles.action}>⬆️</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => moveQueueItem(index, index + 1)}
+                >
+                  <Text style={styles.action}>⬇️</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => removeFromQueue(item.id)}>
+                  <Text style={styles.action}>❌</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           )}
         />
       )}
@@ -72,5 +87,14 @@ const styles = StyleSheet.create({
   artist: {
     ...typography.caption,
     color: colors.textSecondary,
+  },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: spacing.sm,
+  },
+  action: {
+    marginLeft: 14,
+    fontSize: 16,
   },
 });

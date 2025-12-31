@@ -17,11 +17,19 @@
     "android": {
       "permissions": [
         "RECORD_AUDIO",
+        "WAKE_LOCK",
+        "RECORD_AUDIO",
         "WAKE_LOCK"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
+      },
+      "package": "com.jash2884.musicplayer"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "211c7a29-3480-4917-a166-745046d75995"
       }
     }
   }

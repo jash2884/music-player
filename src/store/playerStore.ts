@@ -26,6 +26,10 @@ interface PlayerState {
   togglePlay: () => Promise<void>;
   addToQueue: (song: Song) => Promise<void>;
   playNext: () => Promise<void>;
+
+  removeFromQueue: (id: string) => Promise<void>;
+  moveQueueItem: (from: number, to: number) => Promise<void>;
+
   toggleShuffle: () => void;
   toggleRepeat: () => void;
 }
@@ -54,6 +58,23 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const updated = [...get().queue, song];
     set({ queue: updated });
     await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(updated));
+  },
+
+  removeFromQueue: async (id) => {
+    const updated = get().queue.filter((s) => s.id !== id);
+    set({ queue: updated });
+    await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(updated));
+  },
+
+  moveQueueItem: async (from, to) => {
+    const queue = [...get().queue];
+    if (to < 0 || to >= queue.length) return;
+
+    const item = queue.splice(from, 1)[0];
+    queue.splice(to, 0, item);
+
+    set({ queue });
+    await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
   },
 
   playSong: async (song) => {
